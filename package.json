@@ -1,0 +1,72 @@
+{
+    "name": "BusinessPartnerValidation",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "license": "ISC",
+    "dependencies": {
+        "@sap/cds": "^7.5.1",
+        "@sap/cds-hana": "^2",
+        "@sap-cloud-sdk/http-client": "^3.2.0",
+        "@sap-cloud-sdk/util": "^3.2.0",
+        "@sap/xb-msg-amqp-v100": "^0.9.39",
+        "@sap/xsenv": "^3.4.0",
+        "@sap/xssec": "^3.6.0",
+        "cf-nodejs-logging-support": "^7.2.0",
+        "express": "^4",
+        "grunt": "^1.5.3",
+        "passport": "^0.6.0",
+        "postcode-validator": "^3.6.6"
+    },
+    "engines": {
+        "node": ">=16.17.1 <19.0.0"
+    },
+    "scripts": {
+        "start": "npx cds-serve",
+        "test": "mocha tests/chai-test.js --timeout 15000 --exit"
+    },
+    "devDependencies": {
+        "axios": "^0.21.1",
+        "jest": "*",
+        "mocha": "^9.2.1",
+        "chai": "^4.3.4",
+        "chai-http": "^4.3.0",
+        "sqlite3": "^5.1.6"
+    },
+    "cds": {
+        "hana": {
+            "deploy-format": "hdbtable"
+        },
+        "requires": {
+            "messaging": {
+                "kind": "local-messaging",
+                "[production]": {
+                    "kind": "enterprise-messaging-shared"
+                }
+            },
+            "[production]": {
+                "db": {
+                    "kind": "hana",
+                    "model": [
+                        "db",
+                        "srv"
+                    ]
+                }
+            },
+            "API_BUSINESS_PARTNER": {
+                "kind": "odata",
+                "model": "srv/external/API_BUSINESS_PARTNER",
+                "csrf": true,
+                "csrfInBatch": true,
+                "[production]": {
+                    "credentials": {
+                        "destination": "bupa",
+                        "requestTimeout": 18000000
+                    }
+                }
+            },
+            "uaa": {
+                "kind": "xsuaa"
+            }
+        }
+    }
+}
